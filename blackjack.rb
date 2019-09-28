@@ -138,40 +138,28 @@ class Dealer < User
   end
 end
 
-# ---------------------------ここまでクラス
-
-# 勝負判定用のメソッド
-def goBattle(sum_player_card, sum_dealer_card)
-	puts "あなたのカードの合計は『#{sum_player_card}』!"
-  puts "ディーラーのカードの合計は『#{sum_dealer_card}』!"
-  puts
-	if sum_player_card < sum_dealer_card
-		puts "あなたの敗北です。You Lose..."
-	elsif sum_player_card > sum_dealer_card
-		puts "あなたの勝利です。You Wins!"
-  else
-		puts "引き分けです。draw game..."
-	end
-
-end
+# ----------------------------ここからブラックジャックの記述----------------------------
 
 # デッキを用意する
 deck = Deck.new
 
-# プレイヤーを用意する
+# ブラックジャック開始
+puts "ブラックジャックにようこそ!!"
+puts "これからブラックジャックを開始します"
+puts "使うカードの枚数は#{deck.cards.length}枚です"
+puts
+
+# プレイヤーを定義する
 player = Player.new("プレイヤー")
 dealer = Dealer.new("ディーラ(CPU)")
 
-# プレイヤーとディーラーにカードを配る
+# プレイヤーとディーラーに2枚ずつカードを配る
 2.times do
   player.draw_card(deck)
   dealer.draw_card(deck)
 end
 
-# ブラックジャック開始
-puts "ブラックジャックにようこそ!!"
-puts "これからブラックジャックを開始します"
-puts
+# 引いたカードを表示する
 puts "あなたが1枚目に引いたカードは『#{player.list.first.mark}』の『#{player.list.first.display_number}』です！"
 puts "あなたが2枚目に引いたカードは『#{player.list.last.mark}』の『#{player.list.last.display_number}』です！"
 puts
@@ -185,5 +173,32 @@ player.add_card(deck)
 # ディーラーは17以上が出るまで引き続ける
 dealer.repeat_17_points_exceeded(deck)
 
-# 勝負!!
-goBattle(player.point, dealer.point)
+# 勝負を行います
+puts "あなたのカードの合計は『#{player.point}』!"
+puts "ディーラーのカードの合計は『#{dealer.point}』!"
+puts
+
+if player.point < dealer.point
+  puts "あなたの敗北です。You Lose..."
+elsif player.point > dealer.point
+  puts "あなたの勝利です。You Wins!"
+else
+  puts "引き分けです。draw game..."
+end
+
+# 詳細を表示します
+puts
+puts "------#{player.name}の引いたカード------"
+player.list.each do |card|
+  card.show
+end
+puts "合計『#{player.point}』"
+puts
+puts "------#{dealer.name}の引いたカード------"
+dealer.list.each do |card|
+  card.show
+end
+puts "合計『#{dealer.point}』"
+puts
+puts "------残りのデッキの枚数------"
+puts "残ったカードは#{deck.cards.length}枚です"
